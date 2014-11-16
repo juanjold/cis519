@@ -39,25 +39,25 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{PUT YOUR LAST NAMES HERE}
+\icmltitlerunning{TyckoPennLopezdelgado}
 
 \begin{document} 
 
 \twocolumn[
-\icmltitle{Project Report Template for CIS 419/519\\Introduction to Machine Learning}
+\icmltitle{Status Report: Predicting progression of Alzheimer?s Disease with clinical and genotype data}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
 % unless you've provided the [accepted] option to the icml2014
 % package.
-\icmlauthor{Your Name}{email@yourdomain.edu}
-\icmlauthor{Your CoAuthor's Name}{email@coauthordomain.edu}
-\icmlauthor{Your CoAuthor's Name}{email@coauthordomain.edu}
+\icmlauthor{Josh Tycko}{joshtycko@gmail.com}
+\icmlauthor{Spencer Penn}{spenn321@gmail.com}
+\icmlauthor{Juan Lopez Delgado}{juanlop@sas.upenn.edu}
 
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{boring formatting information, machine learning}
+\icmlkeywords{Alzheimer's disease, machine learning}
 
 \vskip 0.3in
 ]
@@ -68,10 +68,19 @@ Use this template to write your final report for CIS 419/519.  It is based on th
 
 
 
-\section{Final Submission}
+\section{Introduction}
 
-Your final submission will consist of two deliverables:  (1) a final report, and (2) a set of summary slides.  Remember that late days cannot be used for
-the final project submission.
+\subsection{Motivation}
+Alzheimer'€™s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms. It is currently difficult to predict the progression of AD, and it often progresses undiagnosed for years. Machine learning algorithms have the potential to assist doctors and patients by accurately predicting disease progression based on clinical and genetic data.
+
+\subsection{Related work} Since the causes of AD are currently unknown and there are no laboratory tests that can accurately perform a diagnosis, AD progression is quantified with psychological tests like the mini-mental state examination (MMSE) - a questionnaire used to measure cognitive impairment. This set of 30 questions was developed in 1975 and remains the standard.\\ %ADD CITATION HERE
+
+Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points.%ADD CITATIONS HERE
+
+\section{Materials \& Methods}
+\subsection{Data} We are using data collected over 2 years by the Alzheimer'€™s Disease Neuroimaging Initiative (ADNI) in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time.
+
+\subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.
 
 \subsection{Final Report}
 
