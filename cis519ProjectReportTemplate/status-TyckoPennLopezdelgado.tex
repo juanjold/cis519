@@ -64,25 +64,29 @@
 
 \begin{abstract} 
 Use this template to write your final report for CIS 419/519.  It is based on the paper template used in the International Conference on Machine Learning, one of the main machine learning conferences.
+
+%FILL IN ABSTRACT HERE
+
 \end{abstract} 
 
 
 
 \section{Introduction}
+Alzheimer'€™s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms. %ADD CITATION HERE
 
 \subsection{Motivation}
-Alzheimer'€™s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms. It is currently difficult to predict the progression of AD, and it often progresses undiagnosed for years. Machine learning algorithms have the potential to assist doctors and patients by accurately predicting disease progression based on clinical and genetic data.
+It is currently difficult to predict the progression of AD, and it often progresses undiagnosed for years. Machine learning algorithms have the potential to assist doctors and patients by accurately predicting disease progression based on clinical and genetic data, which would enable accurate, early diagnoses.
 
 \subsection{Related work} Since the causes of AD are currently unknown and there are no laboratory tests that can accurately perform a diagnosis, AD progression is quantified with psychological tests like the mini-mental state examination (MMSE) - a questionnaire used to measure cognitive impairment. This set of 30 questions was developed in 1975 and remains the standard.\\ %ADD CITATION HERE
 
 Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points.%ADD CITATIONS HERE
 
 \section{Materials \& Methods}
-\subsection{Data} We are using data collected over 2 years by the Alzheimer'€™s Disease Neuroimaging Initiative (ADNI) in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time.
+\subsection{Data} We are using data collected over 2 years by the Alzheimer'€™s Disease Neuroimaging Initiative (ADNI) in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
 
 \subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.
 
-\subsection{Final Report}
+\section{Final Report}
 
 Your final project report can be at most 5 pages long (include all text, appendices, figures, references, and anything else), and must be written in the provided \LaTeX\ template. 
 
