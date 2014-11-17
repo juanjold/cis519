@@ -15,7 +15,7 @@ import pylab as pl
 
 
 # load the data set
-filename = 'AD_Challenge_Training_Data_Clinical_Updated_7/ADNI_Training_Q1_APOE_July22.2014_JOSH_Edit.csv'
+filename = 'AD_Challenge_Training_Data_Clinical_Updated_7/ADNI_Training_Q1_APOE_July22.2014_Num.csv'
 
 #way to load while keeping headers as dtypes for each column
 #X = np.genfromtxt(filename, dtype=None, delimiter=',', names=True, usecols = range(0,12)) #all the data except MMSE_24
@@ -26,7 +26,7 @@ data = np.loadtxt(filename, delimiter =',', skiprows=1)
 n,d = data.shape
 X = data[:,0:d-1]
 y=data[:,d-1]
-nTrain = 0.5*n  #training on 50% of the data
+nTrain = 0.8*n  #training on 50% of the data
 
 # shuffle the data
 idx = np.arange(n)
