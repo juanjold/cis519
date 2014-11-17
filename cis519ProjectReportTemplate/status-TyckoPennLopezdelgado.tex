@@ -39,12 +39,12 @@
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Predicting progression of Alzheimer's Disease }
+\icmltitlerunning{TyckoPennLopezdelgado}
 
 \begin{document} 
 
 \twocolumn[
-\icmltitle{Status Report: Predicting progression of Alzheimer's Disease with clinical and genotype data}
+\icmltitle{Status Report: Predicting progression of Alzheimer?s Disease with clinical and genotype data}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -52,7 +52,7 @@
 % package.
 \icmlauthor{Josh Tycko}{joshtycko@gmail.com}
 \icmlauthor{Spencer Penn}{spenn321@gmail.com}
-\icmlauthor{Juan Lopez Delgado}{juanlop@sas.upenn.edu}
+\icmlauthor{Juan Jose Lopez Delgado}{juanlop@seas.upenn.edu}
 
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
@@ -63,7 +63,7 @@
 ]
 
 \begin{abstract} 
-Machine learning algorithms have the potential to predict Alzheimer's disease progression by analyzing large clinical and genomic datasets. 
+Use this template to write your final report for CIS 419/519.  It is based on the paper template used in the International Conference on Machine Learning, one of the main machine learning conferences.
 
 %FILL IN ABSTRACT HERE
 
@@ -72,14 +72,14 @@ Machine learning algorithms have the potential to predict Alzheimer's disease pr
 
 
 \section{Introduction}
-Alzheimer'€™s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms. %ADD CITATION HERE
+Alzheimer'ï¿½ï¿½s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms \cite{duthey13}.
 
 \subsection{Motivation}
 It is currently difficult to predict the progression of AD, and it often progresses undiagnosed for years. Machine learning algorithms have the potential to assist doctors and patients by accurately predicting disease progression based on clinical and genetic data, which would enable accurate, early diagnoses.
 
-\subsection{Related work} Since the causes of AD are currently unknown and there are no laboratory tests that can accurately perform a diagnosis, AD progression is quantified with psychological tests like the mini-mental state examination (MMSE) - a questionnaire used to measure cognitive impairment. This set of 30 questions was developed in 1975 and remains the standard.\\ %ADD CITATION HERE
+\subsection{Related work} Since the causes of AD are currently unknown and there are no laboratory tests that can accurately perform a diagnosis, AD progression is quantified with psychological tests like the mini-mental state examination (MMSE) - a questionnaire used to measure cognitive impairment. This set of 30 questions was developed in 1975 and remains the standard \cite{carolan07}
 
-Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points.%ADD CITATIONS HERE
+Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points \cite{umer11}
 
 \section{Materials \& Methods}
 \subsection{Data} Data used in the preparation of this article were obtained from the Alzheimer?s Disease Neuroimaging Initiative (ADNI) database (adni.loni.usc.edu). The data was collected over 2 years in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
@@ -94,7 +94,7 @@ At a minimum your final report must describe the problem/application and motivat
 
 In addition, your report must also include a figure that graphically depicts a major component of your project (e.g., your approach and how it relates to the application, etc.).  Such a summary figure makes your paper much more accessible by providing a visual counterpart to the text.  Developing such a concise and clear figure can actually be quite time-consuming; I often go through around ten versions before I end up with a good final version.
 
-After the class, we are also considering posting the final reports online so that you can read about each others work. If are okay with having your final report posted online, be sure to give us explicit permission to post it in the README file, as described in the project description.
+After the class, we are also considering posting the final reports online so that you can read about each othersï¿½ work. If are okay with having your final report posted online, be sure to give us explicit permission to post it in the README file, as described in the project description.
 
 \subsection{Summary Slides}
 
@@ -192,24 +192,38 @@ row. Again, you may float tables to a column's top or bottom, and set
 wide tables across both columns, but place two-column tables at the
 top or bottom of the page.
  
-\subsection{Citations and References} 
-
-Please use APA reference format regardless of your formatter
-or word processor. If you rely on the \LaTeX\/ bibliographic 
-facility, use {\tt natbib.sty} and {\tt icml2014.bst} 
-included in the style-file package to obtain this format.
-
-Alphabetize references by the surnames of the first authors, with
-single author entries preceding multiple author entries. Order
-references for the same authors by year of publication, with the
-earliest first. Make sure that each reference includes all relevant
-information (e.g., page numbers).
+%\subsection{Citations and References} 
+%
+%Please use APA reference format regardless of your formatter
+%or word processor. If you rely on the \LaTeX\/ bibliographic 
+%facility, use {\tt natbib.sty} and {\tt icml2014.bst} 
+%included in the style-file package to obtain this format.
+%
+%Citations within the text should include the authors' last names and
+%year. If the authors' names are included in the sentence, place only
+%the year in parentheses, for example when referencing Arthur 
+%'s
+%pioneering work %\yrcite{Samuel59}. Otherwise place the entire
+%reference in parentheses with the authors and year separated by a
+%comma %\cite{Samuel59}. List multiple references separated by
+%semicolons \cite{kearns89,Samuel59,mitchell80}. Use the `et~al.'
+%construct only for citations with three or more authors or after
+%listing all authors to a publication in an earlier reference \cite{MachineLearningI}.
+%
+%The references at the end of this document give examples for journal
+%articles \cite{Samuel59}, conference publications \cite{langley00}, book chapters \cite{Newell81}, books \cite{DudaHart2nd}, edited volumes \cite{MachineLearningI}, 
+%technical reports \cite{mitchell80}, and dissertations \cite{kearns89}. 
+%
+%Alphabetize references by the surnames of the first authors, with
+%single author entries preceding multiple author entries. Order
+%references for the same authors by year of publication, with the
+%earliest first. Make sure that each reference includes all relevant
+%information (e.g., page numbers).
 
  
 \section*{Acknowledgments} 
  
 Data collection and sharing for this project was funded by the Alzheimer's Disease Neuroimaging Initiative (ADNI) (National Institutes of Health Grant U01 AG024904) and DOD ADNI (Department of Defense award number W81XWH-12-2-0012). ADNI data are disseminated by the Laboratory for Neuro Imaging at the University of Southern California.
-
 
 \bibliography{status}
 \bibliographystyle{icml2014}
