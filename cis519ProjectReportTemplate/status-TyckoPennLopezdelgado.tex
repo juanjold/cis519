@@ -44,7 +44,7 @@
 \begin{document} 
 
 \twocolumn[
-\icmltitle{Status Report: Predicting progression of Alzheimer?s Disease with clinical and genotype data}
+\icmltitle{Status Report: Predicting progression of Alzheimer's Disease with clinical and genotype data}
 
 % It is OKAY to include author information, even for blind
 % submissions: the style file will automatically remove it for you
@@ -57,13 +57,13 @@
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{Alzheimer's disease, machine learning}
+\icmlkeywords{Alzheimer's disease, machine learning, ensemble methods, genotype}
 
 \vskip 0.3in
 ]
 
 \begin{abstract} 
-Machine learning algorithms have the potential to predict Alzheimer's disease progression by analyzing large clinical and genomic datasets. 
+Machine learning algorithms have the potential to predict Alzheimer's disease (AD) progression by analyzing large clinical and genomic datasets. Here, we describe our progress on our implementation of ensemble methods to generate accurate predictions from a large AD database. We are working with the data from 767 patients (split into training and testing sets), with plans to supplement our data with work from additional longitudinal studies. We have plans to gain domain expertise from the Penn doctors who originally developed the database we have accessed.
 
 %FILL IN ABSTRACT HERE
 
@@ -82,9 +82,25 @@ It is currently difficult to predict the progression of AD, and it often progres
 Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points \cite{umer11}
 
 \section{Materials \& Methods}
-\subsection{Data} Data used in the preparation of this article were obtained from the Alzheimer?s Disease Neuroimaging Initiative (ADNI) database (adni.loni.usc.edu). The data was collected over 2 years in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
+\subsection{Data} Data used in the preparation of this article were obtained from the Alzheimer's Disease Neuroimaging Initiative (ADNI) database (adni.loni.usc.edu). The data was collected over 2 years in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
 
 \subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.
+
+\section{Results}
+% this is what we learned about the data
+% this is our result from trying an algorithm
+%include enough detail that someone could re-produce the result
+%create one key figure
+
+\section{Discussion}
+
+\section{Next Steps}
+\subsection{Integrating other learning algorithms}
+%Fill in stuff
+
+\subsection{Gaining Domain Expertise}
+Several of the researchers who developed the ADNI database are here at Penn. We are being advised by Dr. Leslie Shaw and Dr. John Trojanowski on the best usage of the database and the relationship between the data features and the disease.
+
 
 \section{Final Report}
 
@@ -93,12 +109,6 @@ Your final project report can be at most 5 pages long (include all text, appendi
 At a minimum your final report must describe the problem/application and motivation, survey related work, discuss your approach, and describe your results/conclusions/impact of your project.  It should include enough detail such that someone else can reproduce your approach and results.  For inspiration on what should be included, see the project reports available on the links provided in Section~\ref{sect:Ideas}.  You will likely end up with a better report if you start by writing a 6-7 page report and then edit it down to 5 pages of well-written and concise prose.
 
 In addition, your report must also include a figure that graphically depicts a major component of your project (e.g., your approach and how it relates to the application, etc.).  Such a summary figure makes your paper much more accessible by providing a visual counterpart to the text.  Developing such a concise and clear figure can actually be quite time-consuming; I often go through around ten versions before I end up with a good final version.
-
-After the class, we are also considering posting the final reports online so that you can read about each others� work. If are okay with having your final report posted online, be sure to give us explicit permission to post it in the README file, as described in the project description.
-
-\subsection{Summary Slides}
-
-In addition to the final report, you are also required to prepare a two-slide overview of your project.  Details on the summary slides are available in the project description.
 
 \section{Optional Suggestions for Your Paper and Formatting Guidance} 
 
