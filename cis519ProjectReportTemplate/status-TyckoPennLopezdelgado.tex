@@ -72,7 +72,7 @@ Machine learning algorithms have the potential to predict Alzheimer's disease (A
 
 
 \section{Introduction}
-Alzheimer'��s disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms \cite{duthey13}.
+Alzheimer's disease (AD) is predicted to affect 1 in 85 people globally by 2050, causing dementia and eventual death. Care in the US costs \$100 billion annually, and the available drugs can only help relieve some symptoms \cite{duthey13}.
 
 \subsection{Motivation}
 It is currently difficult to predict the progression of AD, and it often progresses undiagnosed for years. Machine learning algorithms have the potential to assist doctors and patients by accurately predicting disease progression based on clinical and genetic data, which would enable accurate, early diagnoses.
@@ -81,8 +81,46 @@ It is currently difficult to predict the progression of AD, and it often progres
 
 Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points \cite{umer11}
 
+
+\begin{flushleft}
+\begin{table}[h]
+\caption{Interpretations of the MMSE Score, ranging from full normal cognition to sever impairment -- which is closely correlated with the presence of dementia.}
+\label{sample-table}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\hline
+\abovespace
+\belowspace
+Cognitive States & MMSE Score (out of 30) \\
+\hline
+\abovespace
+\belowspace
+Normal Cognition    & $\geq$ 27 points \\
+\belowspace
+Mild Impairment & 19 - 24 points  \\
+\belowspace
+Moderate Impairment    &  10 - 18 points  \\
+\belowspace
+
+Severe Impairment     &  $\leq$ 9 points  \\
+
+\hline
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+
+\end{flushleft}
+
 \section{Materials \& Methods}
 \subsection{Data} Data used in the preparation of this article were obtained from the Alzheimer's Disease Neuroimaging Initiative (ADNI) database (adni.loni.usc.edu). The data was collected over 2 years in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
+
+
 
 \subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.
 
