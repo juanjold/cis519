@@ -77,10 +77,10 @@ It is currently difficult to predict the progression of AD, and it often progres
 
 Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points \cite{umer11}
 
-%Update this to relate to how we broke down classes!!
+%Updated
 \begin{flushleft}
 \begin{table}[h]
-\caption{Interpretations of the MMSE Score, ranging from full normal cognition to sever impairment -- which is closely correlated with the presence of dementia.}
+\caption{Interpretations of the MMSE Score, ranging from full normal cognition to sever impairment -- which is closely correlated with the presence of dementia. We used this breakdown for classification style ML methods.}
 \label{sample-table}
 \vskip 0.15in
 \begin{center}
@@ -94,14 +94,14 @@ Cognitive States & MMSE Score (out of 30) \\
 \hline
 \abovespace
 \belowspace
-Normal Cognition    & $\geq$ 27 points \\
+Normal Cognition    & $>$ 27 points \\
 \belowspace
-Mild Impairment & 19 - 24 points  \\
+Mild Impairment & 27 - 23 points  \\
 \belowspace
-Moderate Impairment    &  10 - 18 points  \\
+Moderate Impairment    &  23 - 20 points  \\
 \belowspace
 
-Severe Impairment     &  $\leq$ 9 points  \\
+Severe Impairment     &  $<$ 20 points  \\
 
 \hline
 \end{tabular}
@@ -128,13 +128,44 @@ Next, we developed a system to categorize patients by Normal Cognition, Mild Imp
 
 % this is our result from trying a Regression algorithm
 \subsection{Linear Regression}
-With an 80:20 training/testing split, the linear regression predictor explained 60\% of the variance in our $(\Delta$MMSE$)$. The residual sum of squares was 10.42. 
+With an 80:20 training/testing split, the linear regression predictor explained 60\% of the variance in our $(\Delta$MMSE$)$. The residual sum of squares was 10.42. When trying other regressors, including like support vector regression, we found similar results.
 
 %Result from using SVM etc
 \subsection{Classification Algorithms}
 %SVM results
 %Decision Tree Results
 %Naive Bayes
+
+\begin{table}[h]
+\caption{Classification accuracies for different variations the machine learning models SVM, Decision Trees, and Naive Bayes on dataset categorized by MMSE labels from Table 1.}
+\label{sample-table}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\hline
+\abovespace\belowspace
+Model & & Params & Train & Test Acc. \\
+\hline
+\abovespace
+SVM    & C= 0.1 & Linear & 64.4\% & 67.5\% \\
+SVM    & C= 3 & Linear & 62.8\% & 66.2\% \\
+SVM    & C= 0.5 & Gauss & 70.0\% & 65.6\% \\
+SVM    & C= 1 & Poly & 70.0\% & 61.0\% \\
+KNN    & K= 5 && 65.9\% & 65.6\% \\
+N. Bayes    &Multi & nomial & 62.5\% & 65.6\% \\
+D. Trees    &Depth & 2 & 61.5\% & 65.6\% \\
+\belowspace
+Adaboost    & D.Tree  &  & 57.1\% & 59.7\% \\
+\hline
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+
 
 %include enough detail that someone could re-produce the result
 %create one key figure
