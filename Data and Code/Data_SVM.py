@@ -77,7 +77,7 @@ ytest = y[nTrain:]
     # print 'train time: ', TrainTimeSVM, ' seconds'
 
 #build Linear Regression Model
-model = svm.SVC(C = 10, kernel = "poly")
+model = svm.SVC(C = 3, kernel = "poly")
 model.fit(Xtrain, ytrain) 
 
 #Make Predictions

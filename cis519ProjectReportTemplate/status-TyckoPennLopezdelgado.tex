@@ -63,12 +63,8 @@
 ]
 
 \begin{abstract} 
-Machine learning algorithms have the potential to predict Alzheimer's disease (AD) progression by analyzing large clinical and genomic datasets. Here, we describe our progress on our implementation of ensemble methods to generate accurate predictions from a large AD database. We are working with the data from 767 patients (split into training and testing sets), with plans to supplement our data with work from additional longitudinal studies. We have plans to gain domain expertise from the Penn doctors who originally developed the database we have accessed.
-
-%FILL IN ABSTRACT HERE
-
+Machine learning algorithms have the potential to predict Alzheimer's disease (AD) progression by analyzing large clinical and genomic datasets. Here, we describe our progress on our implementation of ensemble methods to generate accurate predictions from a large AD database. We are working with the data from 767 patients, with plans to supplement our data with work from additional longitudinal studies.  We found disappointing results when using a linear regression to predict disease progression and determined to switch to a classification problem, for which we can apply several more machine learning algorithms. We have plans to gain domain expertise from the Penn doctors who originally developed the database we have accessed.
 \end{abstract} 
-
 
 
 \section{Introduction}
@@ -81,7 +77,7 @@ It is currently difficult to predict the progression of AD, and it often progres
 
 Machine learning algorithms have been used on ADNI data with varying success to predict the change in MMSE. Interestingly, no single algorithm has been shown to be superior across all AD datasets, particularly when progression is measured up to varying time points \cite{umer11}
 
-
+%Update this to relate to how we broke down classes!!
 \begin{flushleft}
 \begin{table}[h]
 \caption{Interpretations of the MMSE Score, ranging from full normal cognition to sever impairment -- which is closely correlated with the presence of dementia.}
@@ -120,126 +116,41 @@ Severe Impairment     &  $\leq$ 9 points  \\
 \section{Materials \& Methods}
 \subsection{Data} Data used in the preparation of this article were obtained from the Alzheimer's Disease Neuroimaging Initiative (ADNI) database (adni.loni.usc.edu). The data was collected over 2 years in 767 patients, including mental examinations and genotype in order to predict the progression of AD over time. Progression is quantified by the change in MMSE score over a 24 month period $(\Delta$MMSE$)$.
 
+\subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.\\
 
+First, we split the data into training and testing sets. As we were interested in creating an algorithm that could predict disease progression quantitatively, we applied a linear regression to predict $(\Delta$MMSE$)$. Since several of our features were categorical data, we used dummy variables to break them into multiple features that could be weighted accordingly in the model.
 
-\subsection{Approach} We aim to develop an algorithm that is robustly accurate across data sets, by creating an ensemble model of the top models tried previously (simple logistic regression, random forests, and Bayesian nets). By weighting our ensemble with boosting, we will try to create an ensemble model that is superior in accuracy to any of the constituent models.
+Next, we developed a system to categorize patients by Normal Cognition, Mild Impairment, Moderate Impairment, and Severe Impairment; based on MMSE scores (Table 1). We used these classes to begin applying classification algorithms, including SVM, Decision Tree, and Naive Bayes. 
 
 \section{Results}
 % this is what we learned about the data
-% this is our result from trying an algorithm
+
+
+% this is our result from trying a Regression algorithm
+\subsection{Linear Regression}
+With an 80:20 training/testing split, the linear regression predictor explained 60\% of the variance in our $(\Delta$MMSE$)$. The residual sum of squares was 10.42. 
+
+%Result from using SVM etc
+\subsection{Classification Algorithms}
+%SVM results
+%Decision Tree Results
+%Naive Bayes
+
 %include enough detail that someone could re-produce the result
 %create one key figure
-
-\section{Discussion}
-
+%List metrics of the various algorithms in a table format
 \section{Next Steps}
 \subsection{Integrating other learning algorithms}
+Given the initial promising results after switching from a regression problem to a classification problem, we are focused on developing our suite of classification algorithms. We are going to apply ensemble methods on the collection of algorithms we tried.
 %Fill in stuff
+\subsection{Supplementing the dataset}
+We are going to include data from a study done in 2012, the AddNeuron trial. This includes additional clinical evidence and better genomic features.
 
 \subsection{Gaining Domain Expertise}
 Several of the researchers who developed the ADNI database are here at Penn. We are being advised by Dr. Leslie Shaw and Dr. John Trojanowski on the best usage of the database and the relationship between the data features and the disease.
 
 
-\section{Final Report}
 
-Your final project report can be at most 5 pages long (include all text, appendices, figures, references, and anything else), and must be written in the provided \LaTeX\ template. 
-
-At a minimum your final report must describe the problem/application and motivation, survey related work, discuss your approach, and describe your results/conclusions/impact of your project.  It should include enough detail such that someone else can reproduce your approach and results.  For inspiration on what should be included, see the project reports available on the links provided in Section~\ref{sect:Ideas}.  You will likely end up with a better report if you start by writing a 6-7 page report and then edit it down to 5 pages of well-written and concise prose.
-
-In addition, your report must also include a figure that graphically depicts a major component of your project (e.g., your approach and how it relates to the application, etc.).  Such a summary figure makes your paper much more accessible by providing a visual counterpart to the text.  Developing such a concise and clear figure can actually be quite time-consuming; I often go through around ten versions before I end up with a good final version.
-
-\section{Optional Suggestions for Your Paper and Formatting Guidance} 
-
-\subsection{Figures}
- 
-You may want to include figures in the paper to help readers visualize
-your approach and your results. Such artwork should be centered,
-legible, and separated from the text. Lines should be dark and at
-least 0.5~points thick for purposes of reproduction, and text should
-not appear on a gray background.
-
-Label all distinct components of each figure. If the figure takes the
-form of a graph, then give a name for each axis and include a legend
-that briefly describes each curve. Do not include a title inside the
-figure; instead, be sure to include a caption describing your figure.
-
-You may float figures to the top or
-bottom of a column, and you may set wide figures across both columns
-(use the environment {\tt figure*} in \LaTeX), but always place
-two-column figures at the top or bottom of the page.
-
-\subsection{Algorithms}
-
-If you are using \LaTeX, please use the ``algorithm'' and ``algorithmic'' 
-environments to format pseudocode. These require 
-the corresponding stylefiles, algorithm.sty and 
-algorithmic.sty, which are supplied with this package. 
-Algorithm~\ref{alg:example} shows an example. 
-
-\begin{algorithm}[tb]
-   \caption{Bubble Sort}
-   \label{alg:example}
-\begin{algorithmic}
-   \STATE {\bfseries Input:} data $x_i$, size $m$
-   \REPEAT
-   \STATE Initialize $noChange = true$.
-   \FOR{$i=1$ {\bfseries to} $m-1$}
-   \IF{$x_i > x_{i+1}$} 
-   \STATE Swap $x_i$ and $x_{i+1}$
-   \STATE $noChange = false$
-   \ENDIF
-   \ENDFOR
-   \UNTIL{$noChange$ is $true$}
-\end{algorithmic}
-\end{algorithm}
- 
-\subsection{Tables} 
- 
-You may also want to include tables that summarize material. Like 
-figures, these should be centered, legible, and numbered consecutively. 
-However, place the title {\it above\/} the table, as in 
-Table~\ref{sample-table}.
-% Note use of \abovespace and \belowspace to get reasonable spacing 
-% above and below tabular lines. 
-
-\begin{table}[t]
-\caption{Classification accuracies for naive Bayes and flexible 
-Bayes on various data sets.}
-\label{sample-table}
-\vskip 0.15in
-\begin{center}
-\begin{small}
-\begin{sc}
-\begin{tabular}{lcccr}
-\hline
-\abovespace\belowspace
-Data set & Naive & Flexible & Better? \\
-\hline
-\abovespace
-Breast    & 95.9$\pm$ 0.2& 96.7$\pm$ 0.2& $\surd$ \\
-Cleveland & 83.3$\pm$ 0.6& 80.0$\pm$ 0.6& $\times$\\
-Glass2    & 61.9$\pm$ 1.4& 83.8$\pm$ 0.7& $\surd$ \\
-Credit    & 74.8$\pm$ 0.5& 78.3$\pm$ 0.6&         \\
-Horse     & 73.3$\pm$ 0.9& 69.7$\pm$ 1.0& $\times$\\
-Meta      & 67.1$\pm$ 0.6& 76.5$\pm$ 0.5& $\surd$ \\
-Pima      & 75.1$\pm$ 0.6& 73.9$\pm$ 0.5&         \\
-\belowspace
-Vehicle   & 44.9$\pm$ 0.6& 61.5$\pm$ 0.4& $\surd$ \\
-\hline
-\end{tabular}
-\end{sc}
-\end{small}
-\end{center}
-\vskip -0.1in
-\end{table}
-
-Tables contain textual material that can be typeset, as contrasted 
-with figures, which contain graphical material that must be drawn. 
-Specify the contents of each row and column in the table's topmost
-row. Again, you may float tables to a column's top or bottom, and set
-wide tables across both columns, but place two-column tables at the
-top or bottom of the page.
- 
 %\subsection{Citations and References} 
 %
 %Please use APA reference format regardless of your formatter
