@@ -77,17 +77,19 @@ ytest = y[nTrain:]
     # print 'train time: ', TrainTimeSVM, ' seconds'
 
 #build Linear Regression Model
-model = svm.SVC()
+model = svm.SVC(C = 10, kernel = "poly")
 model.fit(Xtrain, ytrain) 
 
 #Make Predictions
+
 pred_train = model.predict(Xtrain)
-pred_test = model.predict(ytrain)
+pred_test = model.predict(Xtest)
 
 accuracy_svm_train = accuracy_score(ytrain, pred_train)
 accuracy_svm_test = accuracy_score(ytest, pred_test)
 
 print 'Accuracy Train ', accuracy_svm_train
+print 'Accuracy Test ', accuracy_svm_test
 #print TrainPredLin[0:10], ytrain[0:10]
 
 
