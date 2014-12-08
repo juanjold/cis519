@@ -11,6 +11,7 @@
 \usepackage{times}
 % For figures
 \usepackage{graphicx} % more modern
+\usepackage{tabulary}
 %\usepackage{epsfig} % less modern
 \usepackage{subfigure} 
 
@@ -34,7 +35,7 @@
 % Employ the following version of the ``usepackage'' statement for
 % submitting the draft version of the paper for review.  This will set
 % the note in the first column to ``Under review.  Do not distribute.''
-\usepackage{icml2014} 
+\usepackage[accepted]{icml2014} 
 
 
 % The \icmltitle you define below is probably too long as a header.
@@ -135,7 +136,7 @@ Then, we presented our results to ADNI scientists at UPenn and gained further in
 %% ADD TABLE THAT SHOWS HOW MANY PEOPLE ARE IN EACH DATA SET
 \begin{flushleft}
 \begin{table}[h]
-\caption{The updated dataset quantifies progression with the ADAS-cog test, which is more thorough than MMSE. Varying fractions of these patients had other features tested at baseline. The ApoE genotype, and specifically the ApoE4 allele, is a strong risk factor for AD. The CSF biomarkers of amyloid beta and tau are associated with plaques and tangles in the AD brain. MRI data quantifies brain morphology. A physician diagnosis takes into account a holistic approach, including self-reported memory loss, and includes the physician's confidence in the diagnosis.}
+\caption{The updated dataset quantifies progression with the ADAS-cog test, which is more thorough than MMSE. Varying fractions of these patients had other features tested at baseline. A physician diagnosis takes into account a holistic approach, including self-reported memory loss, and includes the physician's confidence in the diagnosis. The ApoE genotype, and specifically the ApoE4 allele, is a strong risk factor for AD. MRI data quantifies brain morphology. The CSF biomarkers of amyloid beta and tau are associated with plaques and tangles in the AD brain.}
 \label{sample-table}
 \vskip 0.15in
 \begin{center}
@@ -149,16 +150,15 @@ Feature Type & Number of Patients \\
 \hline
 \abovespace
 \belowspace
-ADAS-cog    & XXX \\
+ADAS-cog    & 819 \\
 \belowspace
-ApoE Genotype & XXX  \\
+Physician Diagnosis    &  819  \\
 \belowspace
-CSF Biomarkers    &  XXX  \\
+ApoE Genotype & 747  \\
 \belowspace
 Brain MRI    &  658 \\
 \belowspace
-Physician Diagnosis    &  XXX  \\
-
+CSF Biomarkers    &  416  \\
 \hline
 \end{tabular}
 \end{sc}
@@ -171,19 +171,25 @@ Physician Diagnosis    &  XXX  \\
 
 The datasets were pre-screened to remove irrelevant features. Researchers at UCSF included quality control (QC) results for each instance of the MRI data - we removed any instance that did not pass all QC tests (977 instances). Many of the physician diagnostic features were scarcely reported (for $<$25\% of patients), so we limited this data set to only include the physician's overall diagnosis and their confidence in that diagnosis.\\
 
-We determined to use a decision tree learner on this data set, given its advantages in this specific domain (see Discussion). We trained the learner on permutations of the data groups \{Genotype, CSF Biomarkers, MRI, Diagnosis\} in order to create confusion matrices from which we could compute accuracy, precision, and recall. 
+We determined to use a decision tree learner on this data set, given its advantages in this specific domain (see Discussion). We used the {\tt SciKitLearn} decision tree, which is an optimized version of the CART algorithm. This is an updated version of the C4.5 decision tree, that constructs binary trees using the feature and threshold with the largest information gain. Trees are considered as sets of if-then rules, and the rules are ordered depending on their accuracy. A rule's precondition will be pruned if the rule's accuracy improves without it. We trained the learner on combinations of the data groups \{Diagnosis, Genotype, CSF Biomarkers, MRI\}. Their ADAS-cog scores and physician diagnosis at baseline were included in every data group. The decision tree classified patients' disease as "progressing" if their $\Delta$ADAS $\leq-4$ six months after baseline or later, and "not progressing" otherwise (Figure 1). This same threshold has been used in clinical trials to determine which patient's neurological health is declining. %Cite Rockwood 2007 in ref folder
+The tree's predictions were compared against actual test data, in order to create confusion matrices from which we could compute accuracy, precision, and recall.
+\begin{figure}
+
+    \includegraphics[width=.5\textwidth]{ADNIFlowchart.png}
+    \caption{An illustration of the classification approach using ADAS-cog to quantify disease progression. For any given patient, data may be available for their ApoE Genotype, CSF Biomarkers, Brain MRI, and Physician Diagnosis, but the ADAS score at baseline is always included.}
+\end{figure}
+
 
 \section{Results}
 % this is what we learned about the data
 
 
 % this is our result from trying a Regression algorithm
-\subsection{Linear Regression}
-With an 80:20 training/testing split, the linear regression predictor explained 60\% of the variance in our $(\Delta$MMSE$)$. The residual sum of squares was 10.42. When trying other regressors, such as  support vector regression, we found similar results.
+\subsection{Linear Regression with MMSE as output}
+With an 80:20 training/testing split, the linear regression predictor explained 60\% of the variance in our $(\Delta$MMSE$)$. The residual sum of squares was 10.42.
 
-%Result from using SVM etc
-\subsection{Classification Algorithms}
-After switching to a classification problem, we were able to obtain better results. We tried five different classification algorithms, SVM, K-Nearest Neighbors, Naive Bayes, Decision Trees and ADABoost, on different parameters. The SVM  model with a penalty of 0.1 and a linear kernel gave us the best results, with a training accuracy of $64.4\%$ and testing accuracy of $67.5\%$. 
+\subsection{Classification Algorithms with MMSE as output}
+After switching to a classification problem, we were able to obtain somewhat better results, while still using MMSE to quantify disease progression (Table 3). We tried five different classification algorithms, SVM, K-Nearest Neighbors, Naive Bayes, Decision Trees and ADABoost, on different parameters. The SVM  model with a penalty of 0.1 and a linear kernel gave us the best results, with a training accuracy of $64.4\%$ and testing accuracy of $67.5\%$. 
 %SVM results
 %Decision Tree Results
 %Naive Bayes
@@ -204,8 +210,8 @@ SVM    & C = 0.1 & Linear & 64.4\% & 67.5\% \\
 SVM    & C = 3 & Linear & 62.8\% & 66.2\% \\
 SVM    & C = 0.5 & Gauss & 70.0\% & 65.6\% \\
 SVM    & C = 1 & Poly & 70.0\% & 61.0\% \\
-KNN    & K = 5 && 65.9\% & 65.6\% \\
-N. Bayes    &Multi & nomial & 62.5\% & 65.6\% \\
+K-NN    & K = 5 && 65.9\% & 65.6\% \\
+N. Bayes    &Multi& & 62.5\% & 65.6\% \\
 D. Trees    &Depth & 2 & 61.5\% & 65.6\% \\
 \belowspace
 Adaboost    & D.Tree  &  & 57.1\% & 59.7\% \\
@@ -220,17 +226,24 @@ Adaboost    & D.Tree  &  & 57.1\% & 59.7\% \\
 %create one key figure
 %List metrics of the various algorithms in a table format
 
-\section{Discussion}
-
-The decision tree was an appropriate learning algorithm for several reasons. They are strong performers for mixed data types, handle missing values well, are robust to outliers, scale easily, handle irrelevant inputs, and are decently interpretable.  It was crucial that our system have a high degree of interpretability, given that we aspire to apply it in a clinical setting to aid physicians making decisions. Also, ADNI data and other AD patient databases often include irrelevant features. Here, we pre-screened the data to ensure all features' relevance, but others may not follow the same procedures.
+\subsection{Decision tree classification with ADAS-cog as output}
+%INCLUDE RESULTS ABOUT OUR DT WORK FROM TODAYYYYYYY!Y!Y!Y!
 
 
 \section{Next Steps}
-\subsection{Integrating other learning algorithms}
-Given the initial promising results after switching from a regression problem to a classification problem, we are focused on developing our suite of classification algorithms. We are going to apply ensemble methods on the collection of algorithms we tried. Going forward, we will work with other machine learning classifier combinations as well as looking for extract and compute features from the dataset to feat into the classifiers.
-%Fill in stuff
-\subsection{Supplementing the dataset}
-We are going to include data from a study done in 2012, the AddNeuron trial. This includes additional clinical evidence and better genomic features. Furthermore, we are also considering complementing our database with the Penn AD Core Center database. Namely, we want to look specifically at some of the genome sequencing data to attempt to derive meaning from imputed genomes.
+\subsection*{Enlarging the dataset}
+This approach could be applied to the ADNI GO and ADNI 2 datasets, which are extensions of the data investigated here in some ways. They have many features in common, but also include additional features which may also be informative. In the future, we could include data from a study done in 2012, the AddNeuron trial. This includes additional clinical evidence and better genomic features. Furthermore, we are also considering complementing our database with the Penn AD Core Center database. Namely, we want to look specifically at some of the genome sequencing data to attempt to derive meaning from imputed genomes, and determine if genes besides ApoE would inform our predictions.
+
+\section{Discussion}
+Our first few attempts to create a useful algorithm resulted in little success but much insight into the importance of domain specific knowledge in machine learning. Initially, we quantified progression using a regressor to predict an MMSE numerical value after 24 months. This was misguided because clinicians are more interested in using MMSE to categorize patients by the severity of their dementia, as opposed to pinning down an exact MMSE number. So, we classified patients into four cognitive state classes by MMSE and achieved test accuracies $>$ 65\%. Upon discussing this work with specialist physician-scientists, we determined that AD drug developers and doctors would be more interested in a classifier that quantified AD progression with the ADAS-cog test. We also included new features that are thought to be informative, including CSF biomarkers and MRI quantification of brain morphology, as well as physician's holistic diagnoses. After pre-screening this new dataset for the highest standard of QC, we determined to use a decision tree to classify patients disease progression, using their baseline data.
+
+The decision tree was an appropriate learning algorithm for several reasons. They are strong performers for mixed data types, handle missing values well, are robust to outliers, scale easily, handle irrelevant inputs, and are mostly interpretable.  It was crucial that our system have a high degree of interpretability, given that we aspire to apply it in a clinical setting to aid physicians in their decision-making. They would not be likely to accept a "black box" algorithm. Also, ADNI data and other AD patient databases often include irrelevant features. Here, we pre-screened the data to ensure all features' relevance, but others may not follow the same procedures, so it is useful to use an algorithm that can appropriately ignore such features. Since the data comes from several institutions there are sometimes discrepancies in which features are reported for a given patient. Decision trees can handle such missing values at a node by assigning the most common value of all examples sorted to that node, for example. Other methods can also handle this issue effectively.
+
+%%%NEED TO TALK MORE HERE ABOUT THE DECISION TREE"S ACTUAL RESULTS. COMPARE THE DIFFERENT COMBINATIONS OF DATA GROUPS AND DISCUSS WHICH ONES ARE MOST IMPORTANT AND WHICH HAVE LITTLE BENEFIT.
+
+
+
+
 
 %\subsection{Citations and References} 
 %
@@ -263,7 +276,7 @@ We are going to include data from a study done in 2012, the AddNeuron trial. Thi
  
 \section*{Acknowledgments} 
  
-We would like to thank Dr. Leslie Shaw and Dr. John Trojanowski, ADNI scientists based at UPenn, for their advice on the best usage of the database and the relationship between the data features and the disease, especially with regards to CSF biomarkers and MRI data. 
+We would like to thank Dr. Leslie Shaw and Dr. John Trojanowski for their advice on the best usage of the database and the relationship between the data features and the disease, especially with regards to CSF biomarkers and MRI data. Dr. Jon Toledo's help in selecting critical datasets of high quality from the large ADNI database was invaluable. 
 
 Data collection and sharing for this project was funded by the Alzheimer's Disease Neuroimaging Initiative (ADNI) (National Institutes of Health Grant U01 AG024904) and DOD ADNI (Department of Defense award number W81XWH-12-2-0012). ADNI data are disseminated by the Laboratory for Neuro Imaging at the University of Southern California.
 
