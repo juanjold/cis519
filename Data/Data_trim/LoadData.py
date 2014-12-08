@@ -212,6 +212,8 @@ ____________________________________________________________
 Create Merged Datasets
 ____________________________________________________________
 '''
+
+#Eliminate NANs
 ADAS_data = np.asarray(ADAS_data)
 ADAS_data = ADAS_data[~np.isnan(ADAS_data).any(axis = 1),:]
 
@@ -231,7 +233,7 @@ Clinical_data = Clinical_data[~np.isnan(Clinical_data).any(axis = 1),:]
 
 start = time.time()
 func = AD_Data_Functions(max_Iters = 20000)
-X1 = ADAS_data[:,:-1]
+X1 = ADAS_data
 X2 = Biomarker_data
 Y = ADAS_change
 
@@ -272,12 +274,13 @@ ____________________________________________________________
 X = X_out[:,2:]
 Y = Y_out[:,4]
 
+# Set Threshhold
 Y = np.asarray(Y>=4).astype(int)
 
 print 'DATA SPLIT', np.mean(Y)
 
 n,d = X.shape
-nTrain = 0.5*n  #training on 50% of the data
+nTrain = 0.5*n  #training on 80% of the data
 
 # shuffle the data
 idx = np.arange(n)
@@ -293,19 +296,27 @@ ytrain = y[:nTrain]
 Xtest = X[nTrain:]
 ytest = y[nTrain:]
 
+Acc_mat = np.zeros((20,3))
+for i in range(1,20)
+	
+	clf = tree.DecisionTreeClassifier(max_depth=i)
+	clf = clf.fit(Xtrain, ytrain)
 
-clf = tree.DecisionTreeClassifier(max_depth=5)
-clf = clf.fit(Xtrain, ytrain)
 
+	pred_train = clf.predict(Xtrain)
+	pred_test = clf.predict(Xtest)
 
-pred_train = clf.predict(Xtrain)
-pred_test = clf.predict(Xtest)
+	accuracy_DT_train = accuracy_score(ytrain, pred_train)
+	accuracy_DT_test = accuracy_score(ytest, pred_test)
 
-accuracy_DT_train = accuracy_score(ytrain, pred_train)
-accuracy_DT_test = accuracy_score(ytest, pred_test)
+	Acc_mat[i,0] = i
+	Acc_mat[i,0] = i
+	Acc_mat[i,0] = i
 
-print 'Accuracy Train ', accuracy_DT_train
-print 'Accuracy Test ', accuracy_DT_test
+	print 'Accuracy Train ', accuracy_DT_train
+	print 'Accuracy Test ', accuracy_DT_test
+
+#tree.export_graphviz(clf,out_file='tree.dot')
 
 # Count unique values
 
