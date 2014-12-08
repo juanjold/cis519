@@ -26,8 +26,11 @@ import StringIO
 from numpy import genfromtxt
 from collections import Counter
 from itertools import groupby
-#from combine_data import AD_Data_Functions
-
+from pandas import DataFrame
+from combine_data import AD_Data_Functions
+import time
+from sklearn import tree
+from sklearn.metrics import accuracy_score
 
 '''
 ____________________________________________________________
@@ -41,13 +44,20 @@ filename = 'ADASSCORES_trim.csv'
 ADAS_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
 ADAS_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype = 'str'))[0,:]	
 
-
 N_ADAS, D_ADAS = ADAS_data.shape
 
 '''
 ____________________________________________________________
 Create Change in ADAS
 ____________________________________________________________
+'''
+'''
+Column Structure
+1. RID
+2. VISCODE (highest)
+3. Baseline TOTAL11
+4. Final_Visit TOTAL11
+5. Change in TOTAL11
 '''
 
 # Create Y
@@ -132,9 +142,17 @@ ____________________________________________________________
 Eliminate All Non-Baseline Data from Set Data Specs
 ____________________________________________________________
 '''
+ADAS_data = np.asarray(ADAS_data)
+Clinical_data = np.asarray(Clinical_data)
+Diagnosis_data = np.asarray(Diagnosis_data)
+MRI_data = np.asarray(MRI_data)
+Biomarker_data = np.asarray(Biomarker_data)
 
-ADAS_data = ADAS_data[[ADAS_data[:,1]==0],:]
-
+ADAS_data = ADAS_data[ADAS_data[:,1]==0,:]
+Clinical_data = Clinical_data[Clinical_data[:,1]==0,:]
+Diagnosis_data = Diagnosis_data[Diagnosis_data[:,1]==0,:]
+MRI_data = MRI_data[MRI_data[:,1]==0,:]
+Biomarker_data = Biomarker_data[Biomarker_data[:,1]==0,:]
 
 '''
 ____________________________________________________________
@@ -191,30 +209,103 @@ print 'Biomarker Unique Patients ', Bio_patients
 
 '''
 ____________________________________________________________
-Create 
+Create Merged Datasets
 ____________________________________________________________
 '''
+ADAS_data = np.asarray(ADAS_data)
+ADAS_data = ADAS_data[~np.isnan(ADAS_data).any(axis = 1),:]
 
-# Create Y
+Biomarker_data = np.asarray(Biomarker_data)
+Biomarker_data = Biomarker_data[~np.isnan(Biomarker_data).any(axis = 1),:]
+
+MRI_data = np.asarray(MRI_data)
+MRI_data = MRI_data[~np.isnan(MRI_data).any(axis = 1),:]
+
+Diagnosis_data = np.asarray(Diagnosis_data)
+Diagnosis_data = Diagnosis_data[~np.isnan(Diagnosis_data).any(axis = 1),:]
+
+Clinical_data = np.asarray(Clinical_data)
+Clinical_data = Clinical_data[~np.isnan(Clinical_data).any(axis = 1),:]
 
 
-	#Check if already in Future Matrix
 
-#print ADAS_change[0:20,:]
+start = time.time()
+func = AD_Data_Functions(max_Iters = 20000)
+X1 = ADAS_data[:,:-1]
+X2 = Biomarker_data
+Y = ADAS_change
 
-#func = AD_Data_Functions()
-#XXX = func.combine_data(ADAS_data, Biomarker_data, ADAS_change)
+(X_out, Y_out) = func.combine_data(X1, X2, Y)
+end = time.time()
 
-#print XXX
+print 'X out ', X_out
+print 'Y out ', Y_out
+print 'Runtime', end - start
+
+X1 = X_out
+X2 = MRI_data
+Y = Y_out
+
+(X_out, Y_out) = func.combine_data(X1, X2, Y)
+end = time.time()
+
+X1 = X_out
+X2 = Diagnosis_data
+Y = Y_out
+
+(X_out, Y_out) = func.combine_data(X1, X2, Y)
+end = time.time()
+
+X1 = X_out
+X2 = Clinical_data[:,:9]
+Y = Y_out
+
+(X_out, Y_out) = func.combine_data(X1, X2, Y)
+end = time.time()
+
 
 '''
 ____________________________________________________________
-Eliminate Everything but Baseline Values from Datasets 
+Run Machine Learning Algorithms
 ____________________________________________________________
 '''
+X = X_out[:,2:]
+Y = Y_out[:,4]
+
+Y = np.asarray(Y>=4).astype(int)
+
+print 'DATA SPLIT', np.mean(Y)
+
+n,d = X.shape
+nTrain = 0.5*n  #training on 50% of the data
+
+# shuffle the data
+idx = np.arange(n)
+np.random.seed(13)
+np.random.shuffle(idx)
+X = X[idx]
+y = Y[idx]
 
 
+# split the data
+Xtrain = X[:nTrain]
+ytrain = y[:nTrain]
+Xtest = X[nTrain:]
+ytest = y[nTrain:]
 
+
+clf = tree.DecisionTreeClassifier(max_depth=5)
+clf = clf.fit(Xtrain, ytrain)
+
+
+pred_train = clf.predict(Xtrain)
+pred_test = clf.predict(Xtest)
+
+accuracy_DT_train = accuracy_score(ytrain, pred_train)
+accuracy_DT_test = accuracy_score(ytest, pred_test)
+
+print 'Accuracy Train ', accuracy_DT_train
+print 'Accuracy Test ', accuracy_DT_test
 
 # Count unique values
 
