@@ -206,13 +206,32 @@ print 'Biomarker Unique Patients ', Bio_patients
 
 
 
+'''
+____________________________________________________________
+Data Selection CONTROLS
+____________________________________________________________
+'''
+
+ADAS_trans = 1
+Bio_trans = 1
+MRI_trans = 1
+Diag_trans = 1
+Clinic_trans = 1
+
+ADAS_include = 1
+Bio_include = 1
+MRI_include = 1
+Diag_include = 1
+Clinic_include = 1
+
+# Import Functions
+func = AD_Data_Functions(max_Iters = 20000)
 
 '''
 ____________________________________________________________
-Create Merged Datasets
+Eliminate NANs
 ____________________________________________________________
 '''
-
 #Eliminate NANs
 ADAS_data = np.asarray(ADAS_data)
 ADAS_data = ADAS_data[~np.isnan(ADAS_data).any(axis = 1),:]
@@ -229,41 +248,115 @@ Diagnosis_data = Diagnosis_data[~np.isnan(Diagnosis_data).any(axis = 1),:]
 Clinical_data = np.asarray(Clinical_data)
 Clinical_data = Clinical_data[~np.isnan(Clinical_data).any(axis = 1),:]
 
+'''
+____________________________________________________________
+Use DT Transform
+____________________________________________________________
+'''
+'''
+if ADAS_trans == 1:
+
+	X1_Trans = ADAS_data
+	X2_Trans = ADAS_data[:,0:2]
+	Y = ADAS_change
+
+	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
+	clf = tree.DecisionTreeClassifier()
+
+	ADAS_data = clf.fit_transform(X_trans, Y_trans)
+
+if MRI_trans == 1:
+
+	X1_Trans = MRI_data
+	X2_Trans = MRI_data[:,0:2]
+	Y = ADAS_change
+
+	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
+	clf = tree.DecisionTreeClassifier()
+
+	MRI_data = clf.fit_transform(X_trans, Y_trans)
 
 
-start = time.time()
-func = AD_Data_Functions(max_Iters = 20000)
-X1 = ADAS_data
-X2 = Biomarker_data
-Y = ADAS_change
+if Bio_trans == 1:
 
-(X_out, Y_out) = func.combine_data(X1, X2, Y)
-end = time.time()
+	X1_Trans = Biomarker_data
+	X2_Trans = X1_Trans[:,0:2]
+	Y = ADAS_change
 
-print 'X out ', X_out
-print 'Y out ', Y_out
-print 'Runtime', end - start
+	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
+	clf = tree.DecisionTreeClassifier()
 
-X1 = X_out
-X2 = MRI_data
-Y = Y_out
+	Biomarker_data = clf.fit_transform(X_trans, Y_trans)
 
-(X_out, Y_out) = func.combine_data(X1, X2, Y)
-end = time.time()
+if Clinic_trans == 1:
 
-X1 = X_out
-X2 = Diagnosis_data
-Y = Y_out
+	X1_Trans = Clinical_data
+	X2_Trans = X1_Trans[:,0:2]
+	Y = ADAS_change
 
-(X_out, Y_out) = func.combine_data(X1, X2, Y)
-end = time.time()
+	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
+	clf = tree.DecisionTreeClassifier()
 
-X1 = X_out
-X2 = Clinical_data[:,:9]
-Y = Y_out
+	Clinical_data = clf.fit_transform(X_trans, Y_trans)
 
-(X_out, Y_out) = func.combine_data(X1, X2, Y)
-end = time.time()
+if Diag_trans == 1:
+
+	X1_Trans = Diagnosis_data
+	X2_Trans = X1_Trans[:,0:2]
+	Y = ADAS_change
+
+	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
+	clf = tree.DecisionTreeClassifier()
+
+	Diagnosis_data = clf.fit_transform(X_trans, Y_trans)
+
+'''
+'''
+
+____________________________________________________________
+Create Merged Datasets
+____________________________________________________________
+'''
+
+X_out = ADAS_data
+Y_out = ADAS_change
+
+if Bio_include == 1:
+
+	X1 = X_out
+	X2 = Biomarker_data
+	Y = Y_out
+
+	(X_out, Y_out) = func.combine_data(X1, X2, Y)
+
+
+#print 'Runtime', end - start
+
+
+if MRI_include == 1:
+
+	X1 = X_out
+	X2 = MRI_data
+	Y = Y_out
+
+	(X_out, Y_out) = func.combine_data(X1, X2, Y)
+
+
+if Diag_include == 1:
+	X1 = X_out
+	X2 = Diagnosis_data
+	Y = Y_out
+
+	(X_out, Y_out) = func.combine_data(X1, X2, Y)
+
+if Clinic_include == 1:
+
+	X1 = X_out
+	X2 = Clinical_data[:,:9]
+	Y = Y_out
+
+	(X_out, Y_out) = func.combine_data(X1, X2, Y)
+
 
 
 '''
@@ -296,10 +389,10 @@ ytrain = y[:nTrain]
 Xtest = X[nTrain:]
 ytest = y[nTrain:]
 
-Acc_mat = np.zeros((20,3))
-for i in range(1,20)
+Acc_mat = np.zeros((50,3))
+for i in range(1,50):
 	
-	clf = tree.DecisionTreeClassifier(max_depth=i)
+	clf = tree.DecisionTreeClassifier(min_samples_leaf = i)
 	clf = clf.fit(Xtrain, ytrain)
 
 
@@ -310,13 +403,39 @@ for i in range(1,20)
 	accuracy_DT_test = accuracy_score(ytest, pred_test)
 
 	Acc_mat[i,0] = i
-	Acc_mat[i,0] = i
-	Acc_mat[i,0] = i
+	Acc_mat[i,1] = accuracy_DT_train
+	Acc_mat[i,2] = accuracy_DT_test
 
 	print 'Accuracy Train ', accuracy_DT_train
 	print 'Accuracy Test ', accuracy_DT_test
 
 #tree.export_graphviz(clf,out_file='tree.dot')
+
+print Acc_mat
+
+'''
+____________________________________________________________
+Outputs
+____________________________________________________________
+'''
+
+plt.subplot(2, 1, 1)
+plt.scatter(Acc_mat[:,0],Acc_mat[:,1])
+plt.title("Training")
+plt.axis('tight')
+plt.xlabel('Min samples / leaf')
+plt.ylabel('Accuracy')
+
+plt.subplot(2, 1, 2)
+plt.scatter(Acc_mat[:,0],Acc_mat[:,2])
+plt.title("Testing")
+plt.axis('tight')
+plt.xlabel('Min samples / leaf')
+plt.ylabel('Accuracy')
+
+plt.suptitle('Overfitting of Decision Tree Classifier')
+
+plt.show()
 
 # Count unique values
 
