@@ -26,6 +26,7 @@ import StringIO
 from numpy import genfromtxt
 from collections import Counter
 from itertools import groupby
+#from combine_data import AD_Data_Functions
 
 
 '''
@@ -40,7 +41,38 @@ filename = 'ADASSCORES_trim.csv'
 ADAS_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
 ADAS_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype = 'str'))[0,:]	
 
+
 N_ADAS, D_ADAS = ADAS_data.shape
+
+'''
+____________________________________________________________
+Create Change in ADAS
+____________________________________________________________
+'''
+
+# Create Y
+RID_ADAS = np.unique(np.asarray(ADAS_data[:,0]))
+ADAS_patients = len(RID_ADAS)
+
+ADAS_change = np.zeros((ADAS_patients,5))
+ADAS_change[:,0] = np.asarray(RID_ADAS)
+
+for i in range(0, ADAS_patients):
+	RID = ADAS_change[i,0]
+	VISCODE = ADAS_change[i,1]
+	for j in range(0,N_ADAS):
+		RID_curr = ADAS_data[j,0]
+		Date = ADAS_data[j,1]
+		if RID_curr == RID:
+			if Date == 0:
+				ADAS_change[i,2] = ADAS_data[j,15]
+			if Date >= VISCODE:
+				ADAS_change[i,1] = Date
+				ADAS_change[i,3] = ADAS_data[j,15]
+ADAS_change[:,4] = ADAS_change[:,3] - ADAS_change[:,2]
+
+
+
 '''
 ____________________________________________________________
 Load Clinical Data Values
@@ -54,7 +86,6 @@ Clinical_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
 # Get Dictionary as List
 Clinical_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype = 'str'))[0,:]
 
-N_Clinical, D_Clinical = Clinical_data.shape
 
 '''
 ____________________________________________________________
@@ -69,9 +100,6 @@ Diagnosis_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype='str'))[0,:]
 
 #print 'Diagnosis_data ', Diagnosis_data.shape
 
-N_Diagnosis, D_Diagnosis = Diagnosis_data.shape
-
-
 '''
 ____________________________________________________________
 Load MFI Values
@@ -84,8 +112,6 @@ MRI_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
 MRI_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype='str'))[0,:]
 
 #print 'MRI_data ', MRI_data.shape
-
-N_MRI, D_MRI = MRI_data.shape
 
 
 '''
@@ -100,7 +126,14 @@ Biomarker_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
 Biomarker_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype='str'))[0,:]
 
 #print 'Biomarker_data ', Biomarker_data.shape
-N_Bio, D_Bio = Biomarker_data.shape
+
+'''
+____________________________________________________________
+Eliminate All Non-Baseline Data from Set Data Specs
+____________________________________________________________
+'''
+
+ADAS_data = ADAS_data[[ADAS_data[:,1]==0],:]
 
 
 '''
@@ -108,6 +141,13 @@ ____________________________________________________________
 PRINT Data Specs
 ____________________________________________________________
 '''
+
+# Compute Data Shape
+N_ADAS, D_ADAS = ADAS_data.shape
+N_Clinical, D_Clinical = Clinical_data.shape
+N_Diagnosis, D_Diagnosis = Diagnosis_data.shape
+N_MRI, D_MRI = MRI_data.shape
+N_Bio, D_Bio = Biomarker_data.shape
 
 # Size
 print 'ADAS Data size ', ADAS_data.shape
@@ -156,27 +196,23 @@ ____________________________________________________________
 '''
 
 # Create Y
-ADAS_change = np.zeros((ADAS_patients,5))
 
-ADAS_change[:,0] = np.asarray(RID_ADAS)
-
-for i in range(0, ADAS_patients):
-	RID = ADAS_change[i,0]
-	VISCODE = ADAS_change[i,1]
-	for j in range(0,N_ADAS):
-		RID_curr = ADAS_data[j,0]
-		Date = ADAS_data[j,1]
-		if RID_curr == RID:
-			if Date == 0:
-				ADAS_change[i,2] = ADAS_data[j,15]
-			if Date >= VISCODE:
-				ADAS_change[i,1] = Date
-				ADAS_change[i,3] = ADAS_data[j,15]
-ADAS_change[:,4] = ADAS_change[:,3] - ADAS_change[:,2]
 
 	#Check if already in Future Matrix
 
-print ADAS_change[0:20,:]
+#print ADAS_change[0:20,:]
+
+#func = AD_Data_Functions()
+#XXX = func.combine_data(ADAS_data, Biomarker_data, ADAS_change)
+
+#print XXX
+
+'''
+____________________________________________________________
+Eliminate Everything but Baseline Values from Datasets 
+____________________________________________________________
+'''
+
 
 
 
