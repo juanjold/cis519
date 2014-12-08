@@ -25,6 +25,7 @@ import pandas
 import StringIO
 from numpy import genfromtxt
 from collections import Counter
+from itertools import groupby
 
 
 '''
@@ -95,8 +96,8 @@ ____________________________________________________________
 filename = 'UPENNBIOMKadni1_trim.csv'
 
 # Load Data Matrix
-Biomarker_data = np.matrix(genfromtxt(filename, delimiter=','))
-Biomarker_data = Biomarker_data[1:,:]		
+Biomarker_data = np.matrix(genfromtxt(filename, delimiter=','))[1:,:]
+Biomarker_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype='str'))[0,:]
 
 #print 'Biomarker_data ', Biomarker_data.shape
 N_Bio, D_Bio = Biomarker_data.shape
@@ -115,27 +116,67 @@ print 'Diagnosis Data size ', Diagnosis_data.shape
 print 'MRI Data size ', MRI_data.shape
 print 'Biomarker Data size ', Biomarker_data.shape
 
+#Print Dictionaries
+
+print 'ADAS' , ADAS_dict
+print 'Clinical', Clinical_dict
+print 'Diagnosis', Diagnosis_dict
+#print 'MRI', MRI_dict
+print 'Bio Marker', Biomarker_dict
+
 # Unique Patients
-RID = len(np.unique(np.asarray(ADAS_data[:,0])))
-ADAS_patients = np.unique(RID)
+RID_ADAS = np.unique(np.asarray(ADAS_data[:,0]))
+ADAS_patients = len(RID_ADAS)
 
-RID = len(np.unique(np.asarray(Clinical_data[:,0])))
-Clinical_patients = np.unique(RID)
+RID_clinical = np.unique(np.asarray(Clinical_data[:,0]))
+Clinical_patients = len(RID_clinical)
 
-RID = len(np.unique(np.asarray(Diagnosis_data[:,0])))
-Diag_patients = np.unique(RID)
+RID_diag = np.unique(np.asarray(Diagnosis_data[:,0]))
+Diag_patients = len(RID_diag)
 
-RID = len(np.unique(np.asarray(MRI_data[:,0])))
-MRI_patients = np.unique(RID)
+RID_MRI = np.unique(np.asarray(MRI_data[:,0]))
+MRI_patients = len(RID_MRI)
 
-RID = len(np.unique(np.asarray(Biomarker_data[:,0])))
-Bio_patients = np.unique(RID)
+RID_Bio = np.unique(np.asarray(Biomarker_data[:,0]))
+Bio_patients = len(RID_Bio)
 
 print 'ADAS Unique Patients ', ADAS_patients
 print 'Clinical Unique Patients ', Clinical_patients
 print 'Diagnosis Unique Patients ', Diag_patients
 print 'MRI Unique Patients ', MRI_patients
 print 'Biomarker Unique Patients ', Bio_patients
+
+
+
+
+'''
+____________________________________________________________
+Create 
+____________________________________________________________
+'''
+
+# Create Y
+ADAS_change = np.zeros((ADAS_patients,5))
+
+ADAS_change[:,0] = np.asarray(RID_ADAS)
+
+for i in range(0, ADAS_patients):
+	RID = ADAS_change[i,0]
+	VISCODE = ADAS_change[i,1]
+	for j in range(0,N_ADAS):
+		RID_curr = ADAS_data[j,0]
+		Date = ADAS_data[j,1]
+		if RID_curr == RID:
+			if Date == 0:
+				ADAS_change[i,2] = ADAS_data[j,15]
+			if Date >= VISCODE:
+				ADAS_change[i,1] = Date
+				ADAS_change[i,3] = ADAS_data[j,15]
+ADAS_change[:,4] = ADAS_change[:,3] - ADAS_change[:,2]
+
+	#Check if already in Future Matrix
+
+print ADAS_change[0:20,:]
 
 
 
