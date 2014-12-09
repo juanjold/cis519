@@ -38,8 +38,6 @@ class AD_Data_Functions:
 
 
 		count = 0
-		a = 0
-		b = 0
 
 		for i in range(0,N_X1):
 
@@ -58,7 +56,7 @@ class AD_Data_Functions:
 			 	
 			 		count += 1
 			 	
-			 	print'count ', count
+			 	#print'count ', count
 
 		'''
 		#if count < self.max_count:
