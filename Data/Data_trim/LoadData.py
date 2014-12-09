@@ -222,7 +222,7 @@ Diag_trans = 1
 Clinic_trans = 1
 
 ADAS_include = 1
-Bio_include = 0
+Bio_include = 1
 MRI_include = 0
 Diag_include = 0
 Clinic_include = 0
@@ -409,9 +409,9 @@ y = Y[idx]
 
 
 # split the data
-Xtrain_0 = X[:nTrain]
+Xtrain = X[:nTrain]
 ytrain = y[:nTrain]
-Xtest_0 = X[nTrain:]
+Xtest = X[nTrain:]
 ytest = y[nTrain:]
 
 
@@ -419,9 +419,12 @@ Acc_mat = np.zeros((100,3))
 for i in range(1,100):
 	
 	i = 100 - i
+	
+	'''
 	clf = tree.DecisionTreeClassifier(min_samples_leaf = i)
 	Xtrain = clf.fit_transform(Xtrain_0, ytrain)
 	Xtest = clf.transform(Xtest_0)
+	'''
 
 	clf = tree.DecisionTreeClassifier(min_samples_leaf = i)
 	clf = clf.fit(Xtrain, ytrain)
@@ -439,6 +442,15 @@ for i in range(1,100):
 	print 'Accuracy Train ', accuracy_DT_train
 	print 'Accuracy Test ', accuracy_DT_test
 
+	'''
+	from sklearn.externals.six import StringIO  
+	import pydot 
+	dot_data = StringIO() 
+	tree.export_graphviz(clf, out_file=dot_data) 
+	graph = pydot.graph_from_dot_data(dot_data.getvalue()) 
+	graph.write_pdf("tree.pdf") 
+	'''
+	
 #tree.export_graphviz(clf,out_file='tree.dot')
 
 print Acc_mat
