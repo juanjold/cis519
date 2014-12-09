@@ -66,17 +66,20 @@ ADAS_patients = len(RID_ADAS)
 
 ADAS_change = np.zeros((ADAS_patients,5))
 ADAS_change[:,0] = np.asarray(RID_ADAS)
+VISCODE = 0
 
 for i in range(0, ADAS_patients):
 	RID = ADAS_change[i,0]
 	VISCODE = ADAS_change[i,1]
 	for j in range(0,N_ADAS):
+		
 		RID_curr = ADAS_data[j,0]
 		Date = ADAS_data[j,1]
 		if RID_curr == RID:
 			if Date == 0:
 				ADAS_change[i,2] = ADAS_data[j,15]
 			if Date >= VISCODE:
+				VISCODE = Date
 				ADAS_change[i,1] = Date
 				ADAS_change[i,3] = ADAS_data[j,15]
 ADAS_change[:,4] = ADAS_change[:,3] - ADAS_change[:,2]
@@ -112,7 +115,7 @@ Diagnosis_dict = np.matrix(genfromtxt(filename, delimiter=',',dtype='str'))[0,:]
 
 '''
 ____________________________________________________________
-Load MFI Values
+Load MRI Values
 ____________________________________________________________
 '''
 filename = 'UCSFFSL_trim.csv'
@@ -219,10 +222,10 @@ Diag_trans = 1
 Clinic_trans = 1
 
 ADAS_include = 1
-Bio_include = 1
-MRI_include = 1
-Diag_include = 1
-Clinic_include = 1
+Bio_include = 0
+MRI_include = 0
+Diag_include = 0
+Clinic_include = 0
 
 # Import Functions
 func = AD_Data_Functions(max_Iters = 20000)
@@ -254,6 +257,7 @@ Use DT Transform
 ____________________________________________________________
 '''
 '''
+
 if ADAS_trans == 1:
 
 	X1_Trans = ADAS_data
@@ -262,8 +266,10 @@ if ADAS_trans == 1:
 
 	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
 	clf = tree.DecisionTreeClassifier()
-
+	X_trans = X_trans[:,2:]
+	Y_trans = Y_trans[:,4]
 	ADAS_data = clf.fit_transform(X_trans, Y_trans)
+	print ADAS_data
 
 if MRI_trans == 1:
 
@@ -271,8 +277,11 @@ if MRI_trans == 1:
 	X2_Trans = MRI_data[:,0:2]
 	Y = ADAS_change
 
+
 	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
 	clf = tree.DecisionTreeClassifier()
+	X_trans = X_trans[:,2:]
+	Y_trans = Y_trans[:,4]
 
 	MRI_data = clf.fit_transform(X_trans, Y_trans)
 
@@ -285,7 +294,9 @@ if Bio_trans == 1:
 
 	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
 	clf = tree.DecisionTreeClassifier()
-
+	
+	X_trans = X_trans[:,2:]
+	Y_trans = Y_trans[:,4]
 	Biomarker_data = clf.fit_transform(X_trans, Y_trans)
 
 if Clinic_trans == 1:
@@ -296,6 +307,9 @@ if Clinic_trans == 1:
 
 	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
 	clf = tree.DecisionTreeClassifier()
+
+	X_trans = X_trans[:,2:]
+	Y_trans = Y_trans[:,4]
 
 	Clinical_data = clf.fit_transform(X_trans, Y_trans)
 
@@ -308,18 +322,29 @@ if Diag_trans == 1:
 	(X_trans, Y_trans) = func.combine_data(X1_Trans, X2_Trans, Y)
 	clf = tree.DecisionTreeClassifier()
 
+	X_trans = X_trans[:,2:]
+	Y_trans = Y_trans[:,4]
+
 	Diagnosis_data = clf.fit_transform(X_trans, Y_trans)
 
 '''
 '''
-
 ____________________________________________________________
 Create Merged Datasets
 ____________________________________________________________
 '''
 
-X_out = ADAS_data
+X_out = ADAS_data[:,0:2]
 Y_out = ADAS_change
+
+
+if ADAS_include == 1:
+
+	X1 = X_out
+	X2 = ADAS_data
+	Y = Y_out
+
+	(X_out, Y_out) = func.combine_data(X1, X2, Y)
 
 if Bio_include == 1:
 
@@ -384,17 +409,22 @@ y = Y[idx]
 
 
 # split the data
-Xtrain = X[:nTrain]
+Xtrain_0 = X[:nTrain]
 ytrain = y[:nTrain]
-Xtest = X[nTrain:]
+Xtest_0 = X[nTrain:]
 ytest = y[nTrain:]
 
-Acc_mat = np.zeros((50,3))
-for i in range(1,50):
+
+Acc_mat = np.zeros((100,3))
+for i in range(1,100):
 	
+	i = 100 - i
+	clf = tree.DecisionTreeClassifier(min_samples_leaf = i)
+	Xtrain = clf.fit_transform(Xtrain_0, ytrain)
+	Xtest = clf.transform(Xtest_0)
+
 	clf = tree.DecisionTreeClassifier(min_samples_leaf = i)
 	clf = clf.fit(Xtrain, ytrain)
-
 
 	pred_train = clf.predict(Xtrain)
 	pred_test = clf.predict(Xtest)
@@ -412,6 +442,10 @@ for i in range(1,50):
 #tree.export_graphviz(clf,out_file='tree.dot')
 
 print Acc_mat
+
+print 'Max Train Acc', Acc_mat[np.argmax([Acc_mat[:,2]]),1]
+print 'Max Test Acc', np.max(Acc_mat[:,2])
+print 'Min leaf', Acc_mat[np.argmax([Acc_mat[:,2]]),0]
 
 '''
 ____________________________________________________________
